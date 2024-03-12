@@ -1,10 +1,5 @@
 var socket = io.connect('http://localhost:3000', { 'forceNew': true });
-$(document).ready(function() {
-    // Obtener el nombre de usuario de localStorage
-    var usuario = localStorage.getItem('username');
-    // Escribir el nombre de usuario en el campo correspondiente
-    $('#username').val(usuario);
-});
+
 
 socket.on('connected-users', function (users) {
     renderConnectedUsers(users);

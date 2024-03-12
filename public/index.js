@@ -1,17 +1,4 @@
-$(document).ready(function() {
-    $('#iniciarSesion').click(function() {
-        var usuario = $('#usuario').val();
-        // Guardar el nombre de usuario en localStorage
-        localStorage.setItem('username', usuario);
-        
-        // Crear un formulario dinámicamente para enviar el nombre de usuario a chat.html
-        var form = $('<form action="chat.html" method="POST">' +
-            '<input type="hidden" name="username" value="' + usuario + '">' +
-            '</form>');
-        $('body').append(form);
-        form.submit();
-    });
-});
+
 
 function registrar() {
     const usuario = document.getElementById('usuario').value;
