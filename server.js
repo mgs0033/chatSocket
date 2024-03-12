@@ -2,22 +2,37 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
-const usersFile='usuarios.json';
+const usersFile = 'usuarios.json';
+const cors = require('cors');
+const fs = require('fs');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
+app.use(cors());
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://chatsocket-1.onrender.com'); // Permitir solicitudes desde el origen específico de tu aplicación en Render
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Permitir ciertos métodos HTTP
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Permitir ciertos encabezados
+    res.setHeader('Access-Control-Allow-Origin', 'https://chatsocket-1.onrender.com');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
 });
 
+// Controlador de opciones para /registrar
+app.options('/registrar', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://chatsocket-1.onrender.com');
+    res.setHeader('Access-Control-Allow-Methods', 'POST');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.sendStatus(200);
+});
 
-const fs = require('fs');
+// Controlador de opciones para /login
+app.options('/login', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://chatsocket-1.onrender.com');
+    res.setHeader('Access-Control-Allow-Methods', 'POST');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.sendStatus(200);
+});
+
 app.use(express.static('public'));
 
 const messages = [
@@ -37,13 +52,11 @@ app.get('/chat', (req, response) => {
     response.send(contenido);
 });
 
-app.get('/',(req, response)=>{
-    const contenido=fs.readFileSync("public/index.html");
+app.get('/', (req, response) => {
+    const contenido = fs.readFileSync("public/index.html");
     response.setHeader("Content-type", "text/html");
     response.send(contenido);
-})
-
-
+});
 
 io.on('connection', (socket) => {
     console.log('Un cliente se ha conectado');
@@ -89,8 +102,7 @@ io.on('connection', (socket) => {
 
 app.post('/registrar', (req, res) => {
     const { username, password } = req.body;
-    
-    // Leer el archivo de usuarios
+
     let users = [];
     try {
         const usersData = fs.readFileSync(usersFile);
@@ -99,17 +111,14 @@ app.post('/registrar', (req, res) => {
         console.error('Error al leer el archivo de usuarios:', error);
     }
 
-    // Verificar si el usuario ya existe
     const existingUser = users.find(user => user.username === username);
     if (existingUser) {
         return res.status(400).send('El usuario ya existe');
     }
 
-    // Agregar el nuevo usuario
     const newUser = { username, password };
     users.push(newUser);
 
-    // Guardar los usuarios actualizados en el archivo
     fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
 
     res.send('Usuario registrado correctamente');
@@ -117,7 +126,7 @@ app.post('/registrar', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    // Leer el archivo de usuarios
+
     let users = [];
     try {
         const usersData = fs.readFileSync(usersFile);
@@ -125,18 +134,15 @@ app.post('/login', (req, res) => {
     } catch (error) {
         console.error('Error al leer el archivo de usuarios:', error);
     }
-    // Verificar las credenciales del usuario
+
     const user = users.find(u => u.username === username && u.password === password);
     if (user) {
-        // Si las credenciales son correctas, redirigir al usuario a chat.html
         res.redirect('/chat');
-        console.log("El inicio llega al servidor")
+        console.log("El inicio llega al servidor");
     } else {
-        // Si las credenciales son incorrectas, enviar un mensaje de error
         res.status(401).send('Credenciales incorrectas');
     }
 });
-
 
 server.listen(3000, () => {
     console.log('Servidor corriendo en http://localhost:3000');
