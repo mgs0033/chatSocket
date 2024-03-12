@@ -1,3 +1,4 @@
+const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
@@ -6,7 +7,6 @@ const usersFile='usuarios.json';
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const express = require('express');
 
 
 app.use((req, res, next) => {
