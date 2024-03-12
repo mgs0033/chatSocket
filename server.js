@@ -7,6 +7,17 @@ const usersFile='usuarios.json';
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const express = require('express');
+
+
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Permitir solicitudes desde cualquier origen
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Permitir ciertos métodos HTTP
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Permitir ciertos encabezados
+    next();
+});
+
+
 const fs = require('fs');
 app.use(express.static('public'));
 
