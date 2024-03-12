@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/estilo.css">
+</head>
+<body>
+    <h1>MIGUEL CHAT 🤩 </h1>
+    <div id="connected-users"></div> 
+    <div id="chat"></div>
+    <br/>
+    <form onsubmit="return addMessage(this)">
+        <input type="text" id="username" placeholder="Tu nombre">
+        <input type="text" id="texto" placeholder="Cuentanos algo">
+        <input type="text" id="idusuario" placeholder="ID del destinatario">
+        <input type="submit" value="Enviar">
+    </form>
+</body>
+
+</html>
